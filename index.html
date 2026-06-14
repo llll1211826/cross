@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TACT-VLA | Tactile-Augmented Dexterous VLA</title>
+    <meta
+      name="description"
+      content="TACT-VLA: tactile-augmented vision-language-action models for multi-dexterous-hand manipulation via frozen cross-hand contact-kinematic mapping.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="Project navigation">
+        <a class="brand" href="#">TACT-VLA</a>
+        <div class="navlinks">
+          <a href="#abstract">Abstract</a>
+          <a href="#experiments">Experiments</a>
+          <a href="#method">Method</a>
+          <a href="#bibtex">BibTeX</a>
+        </div>
+      </nav>
+      <div class="hero__shade"></div>
+      <div class="hero__content">
+        <p class="venue">Anonymous CoRL 2026 Submission</p>
+        <h1>TACT-VLA: Tactile-Augmented Vision-Language-Action Models for Multi-Dexterous-Hand Manipulation</h1>
+        <p class="subtitle">
+          A frozen cross-hand contact-kinematic action interface lets a VLA policy reuse
+          dexterous manipulation demonstrations across Allegro and Inspire hands, while
+          contact-triggered tactile gating conditions action prediction during physical contact.
+        </p>
+        <div class="actions" aria-label="Project links">
+          <a class="button button--primary" href="assets/tact-vla-paper.pdf">Paper PDF</a>
+          <a class="button" href="assets/supplementary.pdf">Supplementary</a>
+          <a class="button" href="#results">Results</a>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#abstract" aria-label="Jump to abstract"></a>
+    </header>
+
+    <main>
+      <section class="section section--intro" id="abstract">
+        <div class="section__inner two-column">
+          <div>
+            <p class="eyebrow">Abstract</p>
+            <h2>Decoupling task semantics from hand-specific joint execution</h2>
+          </div>
+          <p class="lead">
+            Vision-language-action policies provide scalable semantic priors for robot
+            manipulation, but multi-fingered dexterous hands remain difficult to transfer
+            across hardware because raw joint actions are hand-specific and contact states
+            are hard to observe visually. TACT-VLA pretrains hand-specific action adapters
+            offline to align joint actions, fingertip geometry, and contact representations
+            into a shared contact-kinematic action interface. During policy training and
+            inference, the adapters stay frozen: the policy predicts a shared hand-action
+            representation and the target-hand adapter generates executable joint commands.
+            A frozen tactile encoder turns multi-touch point arrays into stable tactile
+            features, and a contact-triggered tactile gate passes touch to the action expert
+            mainly during contact-rich phases.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section--muted" id="experiments">
+        <div class="section__inner">
+          <div class="section-heading">
+            <p class="eyebrow">Experiments</p>
+            <h2>Contact-rich tasks, real and simulated trajectories</h2>
+          </div>
+
+          <div class="media-strip media-grid" aria-label="Contact-rich task videos">
+            <figure>
+              <video src="assets/videos/contact-rich-web.mp4" poster="assets/poster-contact-rich.jpg" controls muted playsinline preload="none" aria-label="Contact-rich task video 1"></video>
+              <figcaption>Open box</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/openbox-web.mp4" poster="assets/poster-openbox.jpg" controls muted playsinline preload="none" aria-label="Contact-rich task video 2"></video>
+              <figcaption>Open box</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/pick-place-web.mp4" poster="assets/poster-pick-place.jpg" controls muted playsinline preload="none" aria-label="Contact-rich task video 3"></video>
+              <figcaption>Pick place</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/wipe-web.mp4" poster="assets/poster-wipe.jpg" controls muted playsinline preload="none" aria-label="Contact-rich task video 4"></video>
+              <figcaption>Wipe board</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/img-0134-web.mp4" controls muted playsinline preload="metadata" aria-label="Additional demonstration video 1"></video>
+              <figcaption>Put the lid on</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/img-0137-web.mp4" controls muted playsinline preload="metadata" aria-label="Additional demonstration video 2"></video>
+              <figcaption>Open box</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/img-0140-web.mp4" controls muted playsinline preload="metadata" aria-label="Additional demonstration video 4"></video>
+              <figcaption>Wipe</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/img-0141-web.mp4" controls muted playsinline preload="metadata" aria-label="Additional demonstration video 5"></video>
+              <figcaption>Cut</figcaption>
+            </figure>
+            <figure>
+              <video src="assets/videos/img-0146-web.mp4" controls muted playsinline preload="metadata" aria-label="Additional demonstration video 6"></video>
+              <figcaption>Pick and place</figcaption>
+            </figure>
+          </div>
+
+          <div class="result-summary" id="results">
+            <div>
+              <span class="metric">88.1%</span>
+              <p>Average success rate across four tasks and two test settings.</p>
+            </div>
+            <div>
+              <span class="metric">32.5</span>
+              <p>Percentage-point gain over the best baseline in the reported comparison.</p>
+            </div>
+            <div>
+              <span class="metric">4</span>
+              <p>Contact-rich dexterous manipulation task settings.</p>
+            </div>
+          </div>
+
+          <div class="table-block">
+            <h3>Success-rate comparison</h3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>Task 1 O</th>
+                    <th>Task 1 G</th>
+                    <th>Task 2 O</th>
+                    <th>Task 2 G</th>
+                    <th>Task 3 O</th>
+                    <th>Task 3 G</th>
+                    <th>Task 4 O</th>
+                    <th>Task 4 G</th>
+                    <th>Avg.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>ACT</td>
+                    <td>13/20</td><td>14/20</td><td>7/20</td><td>9/20</td>
+                    <td>6/20</td><td>3/20</td><td>6/20</td><td>4/20</td><td>38.8%</td>
+                  </tr>
+                  <tr>
+                    <td>RDT</td>
+                    <td>15/20</td><td>16/20</td><td>8/20</td><td>12/20</td>
+                    <td>12/20</td><td>8/20</td><td>5/20</td><td>7/20</td><td>51.9%</td>
+                  </tr>
+                  <tr>
+                    <td>&pi;<sub>0</sub></td>
+                    <td>15/20</td><td>16/20</td><td>10/20</td><td>9/20</td>
+                    <td>12/20</td><td>11/20</td><td>7/20</td><td>9/20</td><td>55.6%</td>
+                  </tr>
+                  <tr>
+                    <td>&pi;<sub>0</sub> + Tactile Backbone</td>
+                    <td>15/20</td><td>13/20</td><td>13/20</td><td>12/20</td>
+                    <td>10/20</td><td>11/20</td><td>6/20</td><td>9/20</td><td>55.6%</td>
+                  </tr>
+                  <tr class="highlight">
+                    <td>Ours</td>
+                    <td>19/20</td><td>19/20</td><td>17/20</td><td>16/20</td>
+                    <td>19/20</td><td>18/20</td><td>17/20</td><td>16/20</td><td>88.1%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-block">
+            <h3>Ablation study</h3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Variant</th>
+                    <th>Task 1</th>
+                    <th>Task 2</th>
+                    <th>Task 3</th>
+                    <th>Task 4</th>
+                    <th>Avg.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="highlight">
+                    <td>Full model</td>
+                    <td>19/20</td><td>17/20</td><td>18/20</td><td>16/20</td><td>87.5%</td>
+                  </tr>
+                  <tr>
+                    <td>w/o cross-hand action interface</td>
+                    <td>16/20</td><td>11/20</td><td>12/20</td><td>11/20</td><td>62.5%</td>
+                  </tr>
+                  <tr>
+                    <td>w/o multi-touch temporal Transformer</td>
+                    <td>17/20</td><td>14/20</td><td>14/20</td><td>13/20</td><td>72.5%</td>
+                  </tr>
+                  <tr>
+                    <td>w/o tactile gate</td>
+                    <td>16/20</td><td>16/20</td><td>14/20</td><td>13/20</td><td>73.8%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--muted">
+        <div class="section__inner">
+          <p class="eyebrow">Main Idea</p>
+          <div class="claim">
+            We propose a frozen cross-hand contact-kinematic action interface for dexterous VLA,
+            together with tactile conditioning that supports contact-rich execution without
+            rebinding the VLA action space to a specific robot hand.
+          </div>
+          <div class="contrib-grid" aria-label="Contributions">
+            <article class="contrib-item">
+              <span class="index">01</span>
+              <h3>Cross-hand action interface</h3>
+              <p>
+                Allegro and Inspire demonstrations are aligned through joint reconstruction,
+                fingertip geometry, contact consistency, and contact-transition supervision.
+              </p>
+            </article>
+            <article class="contrib-item">
+              <span class="index">02</span>
+              <h3>Frozen tactile representation</h3>
+              <p>
+                Multi-touch point arrays are encoded into reusable tactile features so the
+                VLA does not relearn contact geometry from limited demonstrations.
+              </p>
+            </article>
+            <article class="contrib-item">
+              <span class="index">03</span>
+              <h3>Contact-triggered tactile gate</h3>
+              <p>
+                Tactile features are masked in non-contact phases and condition the action
+                expert when contact is established or changing.
+              </p>
+            </article>
+            <article class="contrib-item">
+              <span class="index">04</span>
+              <h3>Multi-hand teleoperation data</h3>
+              <p>
+                A UR5e platform collects vision, language, proprioception, action, and
+                tactile feedback with interchangeable dexterous hands.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="method">
+        <div class="section__inner">
+          <div class="section-heading">
+            <p class="eyebrow">Method</p>
+            <h2>Frozen modules for transferable dexterous execution</h2>
+          </div>
+
+          <div class="method-row">
+            <div class="method-copy">
+              <h3>Framework Overview</h3>
+              <p>
+                The policy receives visual observations, language instructions, robot state,
+                and gated tactile features. Instead of predicting a hand-specific raw joint
+                vector, the action expert predicts a shared contact-kinematic representation.
+                A frozen adapter for the target hand converts that representation into
+                executable joint commands.
+              </p>
+            </div>
+            <figure>
+              <img src="assets/overview.jpg" alt="Overview of the TACT-VLA framework">
+              <figcaption>Overall data flow from tactile encoding and VLA prediction to frozen target-hand adaptation.</figcaption>
+            </figure>
+          </div>
+
+          <div class="method-row method-row--reverse">
+            <figure>
+              <img src="assets/hand.jpg" alt="Cross-hand contact-kinematic mapping">
+              <figcaption>Hand-specific adapters align joint, fingertip, and contact cues to a shared action interface.</figcaption>
+            </figure>
+            <div class="method-copy">
+              <h3>Cross-Hand Contact-Kinematic Mapping</h3>
+              <p>
+                The shared interface organizes fingertip geometry, contact state, and
+                contact-transition trends rather than raw joint trajectories. Switching from
+                Allegro to Inspire changes only the frozen target-hand adapter, while the
+                VLA action interface remains shared.
+              </p>
+            </div>
+          </div>
+
+          <div class="method-row">
+            <div class="method-copy">
+              <h3>Frozen Tactile Encoder and Gate</h3>
+              <p>
+                Each touch is modeled as a graph of calibrated contact points with pressure
+                responses. Graph-level features from multiple touches are fused by a temporal
+                Transformer. A pressure-based contact detector decides when tactile features
+                should condition the action expert.
+              </p>
+            </div>
+            <figure>
+              <img src="assets/tactile.jpg" alt="Frozen tactile encoder">
+              <figcaption>Multi-touch tactile features capture pressure distribution, contact-region shape, and temporal variation.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="bibtex">
+        <div class="section__inner two-column">
+          <div>
+            <p class="eyebrow">Citation</p>
+            <h2>BibTeX</h2>
+            <p class="body-copy">
+              Replace the anonymous fields with the camera-ready metadata after review.
+            </p>
+          </div>
+          <pre><code>@inproceedings{anonymous2026tactvla,
+  title = {TACT-VLA: Tactile-Augmented Vision-Language-Action Models for Multi-Dexterous-Hand Manipulation via Frozen Cross-Hand Contact-Kinematic Mapping},
+  author = {Anonymous Authors},
+  booktitle = {Conference on Robot Learning},
+  year = {2026}
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="section__inner footer__inner">
+        <span>TACT-VLA</span>
+        <span>Anonymous project page for double-blind review.</span>
+      </div>
+    </footer>
+</body>
+</html>
