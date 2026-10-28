@@ -3,10 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TACT-VLA | Tactile-Augmented Dexterous VLA</title>
-    <meta
-      name="description"
-      content="TACT-VLA: tactile-augmented vision-language-action models for multi-dexterous-hand manipulation via frozen cross-hand contact-kinematic mapping.">
+    <title>TACT-VLA | Cross-Hand Policy Transfer</title>
+    <meta name="description" content="TACT-VLA: Tactile-Augmented Vision-Language-Action Models for Cross-Hand Policy Transfer. Learned contact-aware tactile gating and a shared contact-kinematic action space support Allegro–Inspire transfer and LeapHand adaptation.">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -16,23 +14,24 @@
         <div class="navlinks">
           <a href="#abstract">Abstract</a>
           <a href="#experiments">Experiments</a>
+          <a href="#transfer">Transfer</a>
           <a href="#method">Method</a>
           <a href="#bibtex">BibTeX</a>
         </div>
       </nav>
       <div class="hero__shade"></div>
       <div class="hero__content">
-        <p class="venue">Anonymous CoRL 2026 Submission</p>
-        <h1>TACT-VLA: Tactile-Augmented Vision-Language-Action Models for Multi-Dexterous-Hand Manipulation</h1>
+        <p class="venue">Anonymous Research Project</p>
+        <h1>TACT-VLA: Tactile-Augmented Vision-Language-Action Models for Cross-Hand Policy Transfer</h1>
         <p class="subtitle">
-          A frozen cross-hand contact-kinematic action interface lets a VLA policy reuse
-          dexterous manipulation demonstrations across Allegro and Inspire hands, while
-          contact-triggered tactile gating conditions action prediction during physical contact.
+          A shared manipulation policy combines vision, language, and gated tactile feedback.
+          A contact-kinematic action space and hand-specific decoders support policy reuse
+          between Allegro and Inspire, with adapter-only extension to LeapHand.
         </p>
         <div class="actions" aria-label="Project links">
-          <a class="button button--primary" href="assets/tact-vla-paper.pdf">Paper PDF</a>
-          <a class="button" href="assets/supplementary.pdf">Supplementary</a>
-          <a class="button" href="#results">Results</a>
+          <a class="button button--primary" href="#results">Results</a>
+          <a class="button" href="#method">Method</a>
+          <a class="button" href="#experiments">Demonstrations</a>
         </div>
       </div>
       <a class="scroll-cue" href="#abstract" aria-label="Jump to abstract"></a>
@@ -43,21 +42,24 @@
         <div class="section__inner two-column">
           <div>
             <p class="eyebrow">Abstract</p>
-            <h2>Decoupling task semantics from hand-specific joint execution</h2>
+            <h2>Tactile feedback and shared actions for cross-hand policy reuse</h2>
           </div>
-          <p class="lead">
-            Vision-language-action policies provide scalable semantic priors for robot
-            manipulation, but multi-fingered dexterous hands remain difficult to transfer
-            across hardware because raw joint actions are hand-specific and contact states
-            are hard to observe visually. TACT-VLA pretrains hand-specific action adapters
-            offline to align joint actions, fingertip geometry, and contact representations
-            into a shared contact-kinematic action interface. During policy training and
-            inference, the adapters stay frozen: the policy predicts a shared hand-action
-            representation and the target-hand adapter generates executable joint commands.
-            A frozen tactile encoder turns multi-touch point arrays into stable tactile
-            features, and a contact-triggered tactile gate passes touch to the action expert
-            mainly during contact-rich phases.
-          </p>
+          <div class="lead">
+            <p>Multi-fingered dexterous hands offer flexible grasp configurations and coordinated
+            finger motion for tasks such as pick-and-place and tool manipulation. However,
+            differences in hand morphology and tactile sensor configurations hinder the direct
+            reuse of manipulation policies and tactile information across hands.</p>
+            <p>TACT-VLA encodes observations from different tactile sensors into feature vectors
+            of the same dimension and uses a learnable contact-aware gate to regulate their
+            contribution to action prediction. A latent action space learned from joint actions,
+            fingertip positions, and contact information connects the shared policy to
+            hand-specific decoders that generate executable joint commands.</p>
+            <p>Across four real-robot tasks—pick-and-place, wiping, box opening, and cutting—the
+            framework achieves an average success rate of <strong>88.1%</strong> on Allegro and
+            Inspire, exceeding the best evaluated baseline by <strong>32.5 percentage points</strong>.
+            Bidirectional transfer demonstrates policy reuse between these hands, while adaptation
+            to LeapHand achieves an average success rate of <strong>77.5%</strong>.</p>
+          </div>
         </div>
       </section>
 
@@ -110,34 +112,40 @@
           <div class="result-summary" id="results">
             <div>
               <span class="metric">88.1%</span>
-              <p>Average success rate across four tasks and two test settings.</p>
+              <p>Real-world success across four tasks and two hands: Allegro and Inspire.</p>
             </div>
             <div>
-              <span class="metric">32.5</span>
-              <p>Percentage-point gain over the best baseline in the reported comparison.</p>
+              <span class="metric">89.0%</span>
+              <p>Simulation success across eight task–hand combinations.</p>
             </div>
             <div>
-              <span class="metric">4</span>
-              <p>Contact-rich dexterous manipulation task settings.</p>
+              <span class="metric">77.5%</span>
+              <p>LeapHand success with a frozen VLA and leave-one-task-out adapter training.</p>
             </div>
           </div>
 
           <div class="table-block">
-            <h3>Success-rate comparison</h3>
-            <div class="table-scroll">
+            <h3>Real-world multi-hand evaluation</h3>
+            <p class="body-copy">Joint training uses 50 demonstrations per task per hand:
+              200 Allegro and 200 Inspire demonstrations. Each method is evaluated over
+              20 rollouts per task–hand combination (160 total). Cells report successes out of
+              20; the mean is taken across all eight combinations (Table I).</p>
+            <div class="table-scroll" role="region" aria-label="Real-world success rates" tabindex="0">
               <table>
                 <thead>
                   <tr>
-                    <th>Method</th>
-                    <th>Task 1 O</th>
-                    <th>Task 1 G</th>
-                    <th>Task 2 O</th>
-                    <th>Task 2 G</th>
-                    <th>Task 3 O</th>
-                    <th>Task 3 G</th>
-                    <th>Task 4 O</th>
-                    <th>Task 4 G</th>
-                    <th>Avg.</th>
+                    <th scope="col" rowspan="2">Method</th>
+                    <th scope="colgroup" colspan="2">Pick-and-place</th>
+                    <th scope="colgroup" colspan="2">Wiping</th>
+                    <th scope="colgroup" colspan="2">Box opening</th>
+                    <th scope="colgroup" colspan="2">Cutting</th>
+                    <th scope="col" rowspan="2">Average</th>
+                  </tr>
+                  <tr>
+                    <th scope="col">Allegro</th><th scope="col">Inspire</th>
+                    <th scope="col">Allegro</th><th scope="col">Inspire</th>
+                    <th scope="col">Allegro</th><th scope="col">Inspire</th>
+                    <th scope="col">Allegro</th><th scope="col">Inspire</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,7 +155,7 @@
                     <td>6/20</td><td>3/20</td><td>6/20</td><td>4/20</td><td>38.8%</td>
                   </tr>
                   <tr>
-                    <td>RDT</td>
+                    <td>Diffusion Policy (DP)</td>
                     <td>15/20</td><td>16/20</td><td>8/20</td><td>12/20</td>
                     <td>12/20</td><td>8/20</td><td>5/20</td><td>7/20</td><td>51.9%</td>
                   </tr>
@@ -162,152 +170,244 @@
                     <td>10/20</td><td>11/20</td><td>6/20</td><td>9/20</td><td>55.6%</td>
                   </tr>
                   <tr class="highlight">
-                    <td>Ours</td>
+                    <td>TACT-VLA (ours)</td>
                     <td>19/20</td><td>19/20</td><td>17/20</td><td>16/20</td>
                     <td>19/20</td><td>18/20</td><td>17/20</td><td>16/20</td><td>88.1%</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <p class="body-copy">The best evaluated baselines, &pi;<sub>0</sub> and
+              &pi;<sub>0</sub> + Tactile Backbone, both achieve 55.6%. TACT-VLA improves the
+              average by 32.5 percentage points. Direct tactile input alone does not improve
+              the mean under this evaluation protocol.</p>
           </div>
 
-          <div class="table-block">
-            <h3>Ablation study</h3>
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Variant</th>
-                    <th>Task 1</th>
-                    <th>Task 2</th>
-                    <th>Task 3</th>
-                    <th>Task 4</th>
-                    <th>Avg.</th>
-                  </tr>
-                </thead>
+          <div class="table-block" id="transfer">
+            <h3>Bidirectional cross-hand transfer</h3>
+            <p class="body-copy">Source-only VLA training uses 200 task demonstrations from
+              one hand, with no target-hand task demonstrations. The Allegro and Inspire
+              interfaces are pretrained on task-agnostic motion and contact data that exclude
+              the evaluation tasks. Both the policy and target-hand adapter remain frozen
+              during evaluation, with 20 trials per task.</p>
+            <div class="method-row result-row">
+              <div class="method-copy">
+                <p class="transfer-stat"><strong>81.3%</strong> Allegro &rarr; Inspire</p>
+                <p class="transfer-stat"><strong>78.8%</strong> Inspire &rarr; Allegro</p>
+                <p>Removing tactile fusion reduces the mean success rate by 21.3 and 20.0
+                  percentage points, respectively. Removing contact-kinematic consistency
+                  produces a larger drop; IK retargeting also performs below the learned
+                  interface in both directions.</p>
+              </div>
+              <figure>
+                <a href="assets/transfer.jpg" aria-label="Open the bidirectional transfer figure at full size">
+                  <img src="assets/transfer.jpg" width="2201" height="2648" loading="lazy"
+                    alt="Figure 7: task success rates for bidirectional Allegro–Inspire transfer, comparing the full model, no tactile fusion, no contact-kinematic consistency, and IK retargeting.">
+                </a>
+                <figcaption>Figure 7. Source-only transfer and ablations from the manuscript.</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="table-block" id="leaphand">
+            <h3>Adapting the frozen policy to LeapHand</h3>
+            <div class="method-row result-row">
+              <div class="method-copy">
+                <p>The shared VLA learns all four tasks exclusively from Allegro and Inspire.
+                  LeapHand reuses Allegro's tactile branch, state-input pipeline, and
+                  normalization parameters. Only the LeapHand adapter is trained; the VLA,
+                  tactile encoder, tactile projection, and contact gate remain fixed.</p>
+                <p>Under four-fold leave-one-task-out evaluation, each adapter is trained on
+                  150 LeapHand demonstrations from three tasks and evaluated on the held-out
+                  fourth task, with 20 trials. The evaluation task is excluded from adapter
+                  training.</p>
+                <p>The full contact-kinematic interface achieves <strong>77.5%</strong> on
+                  average, compared with <strong>53.8%</strong> for geometry-only LOTO and
+                  <strong>40.0%</strong> for IK retargeting.</p>
+              </div>
+              <figure>
+                <a href="assets/leaphand.jpg" aria-label="Open the LeapHand evaluation figure at full size">
+                  <img src="assets/leaphand.jpg" width="2201" height="2262" loading="lazy"
+                    alt="Figure 8: LeapHand success rates are 85% for pick-and-place, 75% for wiping, 80% for box opening, and 70% for cutting; mean success is 77.5%.">
+                </a>
+                <figcaption>Figure 8. LeapHand adaptation with a frozen Allegro–Inspire VLA.</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="table-block" id="ablations">
+            <h3>Within-hand reconstruction ablation</h3>
+            <p class="body-copy">Each within-hand loss term is removed separately while the
+              cross-hand objective is unchanged. Fingertip-position error is the mean
+              Euclidean distance between predicted and reference positions (Table II).</p>
+            <div class="table-scroll" role="region" aria-label="Within-hand reconstruction ablation" tabindex="0">
+              <table class="compact-table">
+                <thead><tr><th scope="col">Configuration</th><th scope="col">Joint RMSE &darr; (rad)</th><th scope="col">Mean fingertip-position error &darr; (mm)</th></tr></thead>
                 <tbody>
-                  <tr class="highlight">
-                    <td>Full model</td>
-                    <td>19/20</td><td>17/20</td><td>18/20</td><td>16/20</td><td>87.5%</td>
-                  </tr>
-                  <tr>
-                    <td>w/o cross-hand action interface</td>
-                    <td>16/20</td><td>11/20</td><td>12/20</td><td>11/20</td><td>62.5%</td>
-                  </tr>
-                  <tr>
-                    <td>w/o multi-touch temporal Transformer</td>
-                    <td>17/20</td><td>14/20</td><td>14/20</td><td>13/20</td><td>72.5%</td>
-                  </tr>
-                  <tr>
-                    <td>w/o tactile gate</td>
-                    <td>16/20</td><td>16/20</td><td>14/20</td><td>13/20</td><td>73.8%</td>
-                  </tr>
+                  <tr class="highlight"><td>Full</td><td>0.1726 &plusmn; 0.0059</td><td>3.18 &plusmn; 0.13</td></tr>
+                  <tr><td>w/o L<sub>q</sub></td><td>0.2009 &plusmn; 0.0056</td><td>3.45 &plusmn; 0.33</td></tr>
+                  <tr><td>w/o L<sub>tip</sub></td><td>0.1239 &plusmn; 0.0038</td><td>4.42 &plusmn; 0.28</td></tr>
+                  <tr><td>w/o L<sup>self</sup><sub>contact</sub></td><td>0.1724 &plusmn; 0.0058</td><td>3.96 &plusmn; 0.19</td></tr>
+                  <tr><td>w/o L<sub>trans</sub></td><td>0.1829 &plusmn; 0.0087</td><td>3.72 &plusmn; 0.20</td></tr>
                 </tbody>
               </table>
             </div>
+            <p class="body-copy">Lower joint error does not necessarily imply better fingertip
+              reconstruction: removing fingertip supervision lowers joint RMSE but increases
+              fingertip-position error.</p>
+          </div>
+
+          <div class="table-block">
+            <h3>Cross-hand consistency ablation</h3>
+            <p class="body-copy">The within-hand objective is unchanged (Table III).</p>
+            <div class="table-scroll" role="region" aria-label="Cross-hand consistency ablation" tabindex="0">
+              <table class="compact-table">
+                <thead><tr><th scope="col">Configuration</th><th scope="col">Fingertip distance MAE &darr; (mm)</th><th scope="col">Direction error &darr; (&deg;)</th></tr></thead>
+                <tbody>
+                  <tr class="highlight"><td>Full</td><td>1.66 &plusmn; 0.04</td><td>2.80 &plusmn; 0.32</td></tr>
+                  <tr><td>w/o L<sub>cross,geom</sub></td><td>48.91 &plusmn; 9.68</td><td>45.69 &plusmn; 1.86</td></tr>
+                  <tr><td>w/o L<sub>cross,contact</sub></td><td>3.91 &plusmn; 0.48</td><td>4.87 &plusmn; 0.36</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="body-copy">Both geometry and contact supervision contribute to
+              cross-hand geometric consistency.</p>
+          </div>
+
+          <div class="table-block" id="simulation">
+            <h3>Simulation evaluation</h3>
+            <p class="body-copy">Four tasks—cylinder pick-and-place, cube stacking, laptop
+              opening, and ring-on-peg assembly—use 50 demonstrations per task per hand.
+              Policies are trained separately for each task and evaluated on Allegro and
+              Inspire with 100 rollouts per task–hand combination (800 total). TACT-VLA
+              averages 89.0%, leading the evaluated methods in all eight combinations.
+              Simulation and real-world policies are trained separately.</p>
+            <figure class="paper-figure">
+              <a href="assets/simulation.jpg" aria-label="Open the simulation results figure at full size">
+                <img src="assets/simulation.jpg" width="2201" height="806" loading="lazy"
+                  alt="Figure 5: simulation tasks and success-rate comparisons across Allegro and Inspire, with TACT-VLA averaging 89.0%.">
+              </a>
+              <figcaption>Figure 5. Snapshots show Allegro, LeapHand, and Inspire; quantitative
+                success rates are reported for Allegro and Inspire.</figcaption>
+            </figure>
           </div>
         </div>
       </section>
 
-      <section class="section section--muted">
+      <section class="section">
         <div class="section__inner">
           <p class="eyebrow">Main Idea</p>
-          <div class="claim">
-            We propose a frozen cross-hand contact-kinematic action interface for dexterous VLA,
-            together with tactile conditioning that supports contact-rich execution without
-            rebinding the VLA action space to a specific robot hand.
-          </div>
+          <div class="claim">A shared policy uses contact feedback and a common action space
+            to reuse manipulation experience across dexterous hands.</div>
           <div class="contrib-grid" aria-label="Contributions">
             <article class="contrib-item">
               <span class="index">01</span>
-              <h3>Cross-hand action interface</h3>
-              <p>
-                Allegro and Inspire demonstrations are aligned through joint reconstruction,
-                fingertip geometry, contact consistency, and contact-transition supervision.
-              </p>
+              <h3>Multi-sensor tactile learning</h3>
+              <p>Sensor-specific encoders and a shared Transformer learn features of the same
+                dimension through within-sensor masked reconstruction.</p>
             </article>
             <article class="contrib-item">
               <span class="index">02</span>
-              <h3>Frozen tactile representation</h3>
-              <p>
-                Multi-touch point arrays are encoded into reusable tactile features so the
-                VLA does not relearn contact geometry from limited demonstrations.
-              </p>
+              <h3>Learnable contact-aware gate</h3>
+              <p>A continuous gate uses tactile features and proprioception to regulate
+                tactile input, with frame-level contact supervision during training.</p>
             </article>
             <article class="contrib-item">
               <span class="index">03</span>
-              <h3>Contact-triggered tactile gate</h3>
-              <p>
-                Tactile features are masked in non-contact phases and condition the action
-                expert when contact is established or changing.
-              </p>
+              <h3>Contact-kinematic action mapping</h3>
+              <p>Joint reconstruction, fingertip geometry, contact consistency, and auxiliary
+                contact–geometry reconstruction shape the shared action space.</p>
             </article>
             <article class="contrib-item">
               <span class="index">04</span>
-              <h3>Multi-hand teleoperation data</h3>
-              <p>
-                A UR5e platform collects vision, language, proprioception, action, and
-                tactile feedback with interchangeable dexterous hands.
-              </p>
+              <h3>Policy reuse across hands</h3>
+              <p>A UR5e platform supports joint training, bidirectional Allegro–Inspire
+                transfer, and LeapHand adaptation with the VLA policy held fixed.</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section" id="method">
+      <section class="section section--muted" id="method">
         <div class="section__inner">
           <div class="section-heading">
             <p class="eyebrow">Method</p>
-            <h2>Frozen modules for transferable dexterous execution</h2>
+            <h2>Tactile conditioning and a shared contact-kinematic action space</h2>
           </div>
-
-          <div class="method-row">
-            <div class="method-copy">
-              <h3>Framework Overview</h3>
-              <p>
-                The policy receives visual observations, language instructions, robot state,
-                and gated tactile features. Instead of predicting a hand-specific raw joint
-                vector, the action expert predicts a shared contact-kinematic representation.
-                A frozen adapter for the target hand converts that representation into
-                executable joint commands.
-              </p>
-            </div>
-            <figure>
-              <img src="assets/overview.jpg" alt="Overview of the TACT-VLA framework">
-              <figcaption>Overall data flow from tactile encoding and VLA prediction to frozen target-hand adaptation.</figcaption>
+          <div class="method-overview">
+            <h3>Shared VLA policy learning and execution</h3>
+            <p class="body-copy">Visual observations and a language instruction provide VLM
+              context. The action expert combines this context with proprioception and gated
+              tactile features, then uses latent-space flow matching to predict shared action
+              segments. A frozen target-hand decoder converts the predictions into joint
+              commands. Policy training optimizes the action expert, tactile projection layer,
+              and gate while the pretrained tactile encoder and action interfaces remain frozen.</p>
+            <figure class="paper-figure">
+              <a href="assets/overview.jpg" aria-label="Open the TACT-VLA framework figure at full size">
+                <img src="assets/overview.jpg" width="2201" height="1170" loading="lazy"
+                  alt="Figure 2: multi-hand teleoperation, shared VLA policy with flow matching, contact-kinematic action mapping, learned tactile gating, and cross-hand evaluation.">
+              </a>
+              <figcaption>Figure 2. The TACT-VLA framework in the current manuscript.</figcaption>
             </figure>
           </div>
-
+          <div class="method-row">
+            <div class="method-copy">
+              <h3>Two-stage tactile learning</h3>
+              <p>Allegro fingertips provide 3 &times; 4 tactile arrays. Inspire fingertips
+                contain two sensing regions represented by 3 &times; 3 and 12 &times; 8 arrays.
+                Sensor-specific encoders preserve these layouts, while a shared tactile
+                Transformer produces feature vectors of the same dimension.</p>
+              <p><strong>Stage I:</strong> pretrain the encoders and Transformer with
+                within-sensor masked reconstruction, without action or task labels. Discard
+                the reconstruction decoders and freeze the tactile encoder.</p>
+              <p><strong>Stage II:</strong> jointly train a soft contact-aware gate and the
+                action expert. The gate predicts a scalar weight from tactile features and
+                proprioception, supervised by annotated frame-level binary contact labels.</p>
+              <p class="equation">g<sub>t</sub> = &sigma;(G<sub>&phi;</sub>([f<sub>t</sub>; s<sub>t</sub>])),
+                &nbsp; f&#771;<sub>t</sub> = g<sub>t</sub> f<sub>t</sub>,
+                &nbsp; g<sub>t</sub> &isin; [0, 1]</p>
+              <p>At inference, the gate predicts continuous weights directly from the
+                observations; contact labels are not required.</p>
+            </div>
+            <figure>
+              <a href="assets/tactile.jpg" aria-label="Open the two-stage tactile learning figure at full size">
+                <img src="assets/tactile.jpg" width="2201" height="2314" loading="lazy"
+                  alt="Figure 3: masked tactile pretraining with sensor-specific encoders and a shared Transformer, followed by a learned soft gate using tactile features and state.">
+              </a>
+              <figcaption>Figure 3. Multi-sensor tactile pretraining and learned contact-aware gating.</figcaption>
+            </figure>
+          </div>
           <div class="method-row method-row--reverse">
             <figure>
-              <img src="assets/hand.jpg" alt="Cross-hand contact-kinematic mapping">
-              <figcaption>Hand-specific adapters align joint, fingertip, and contact cues to a shared action interface.</figcaption>
+              <a href="assets/hand.jpg" aria-label="Open the cross-hand action mapping figure at full size">
+                <img src="assets/hand.jpg" width="2201" height="1907" loading="lazy"
+                  alt="Figure 4: hand-specific encoders map joint actions, contact states, and fingertip positions to shared actions; decoders and auxiliary heads provide reconstruction and cross-hand supervision.">
+              </a>
+              <figcaption>Figure 4. Offline contact-kinematic mapping pretraining.</figcaption>
             </figure>
             <div class="method-copy">
-              <h3>Cross-Hand Contact-Kinematic Mapping</h3>
-              <p>
-                The shared interface organizes fingertip geometry, contact state, and
-                contact-transition trends rather than raw joint trajectories. Switching from
-                Allegro to Inspire changes only the frozen target-hand adapter, while the
-                VLA action interface remains shared.
-              </p>
+              <h3>Cross-hand contact-kinematic mapping</h3>
+              <p>Hand-specific encoders map joint-action segments, fingertip positions, and
+                contact states into a shared latent space. Within-hand training supervises
+                joint reconstruction, fingertip geometry, contact states, and auxiliary
+                next-step contact–geometry reconstruction.</p>
+              <p>Cross-hand geometry compares all six relative fingertip vectors among the
+                thumb, index, middle, and ring fingers in a common anatomical frame while
+                preserving each hand's physical scale. Class-balanced binary cross-entropy
+                supervises cross-hand contact consistency.</p>
+              <p>The interfaces are pretrained on task-agnostic motion and contact data.
+                After pretraining, the encoders supply fixed latent targets and the decoders
+                supply hand-specific joint commands. Cross-hand transfer holds the shared
+                policy fixed and selects the target-hand decoder.</p>
             </div>
           </div>
-
-          <div class="method-row">
-            <div class="method-copy">
-              <h3>Frozen Tactile Encoder and Gate</h3>
-              <p>
-                Each touch is modeled as a graph of calibrated contact points with pressure
-                responses. Graph-level features from multiple touches are fused by a temporal
-                Transformer. A pressure-based contact detector decides when tactile features
-                should condition the action expert.
-              </p>
-            </div>
-            <figure>
-              <img src="assets/tactile.jpg" alt="Frozen tactile encoder">
-              <figcaption>Multi-touch tactile features capture pressure distribution, contact-region shape, and temporal variation.</figcaption>
-            </figure>
+          <div class="table-block">
+            <h3>Scope and limitations</h3>
+            <p class="body-copy">A new hand requires accurate kinematic calibration and
+              adapter training; a new tactile sensor type requires a compatible sensor-specific
+              encoder. Adaptation is evaluated on one additional hand, LeapHand. Larger
+              morphology differences may restrict executable actions, and tactile-feature
+              transferability across sensor types has not been separately quantified.</p>
           </div>
         </div>
       </section>
@@ -317,15 +417,15 @@
           <div>
             <p class="eyebrow">Citation</p>
             <h2>BibTeX</h2>
-            <p class="body-copy">
-              Replace the anonymous fields with the camera-ready metadata after review.
-            </p>
+            <p class="body-copy">Anonymous manuscript citation.</p>
           </div>
-          <pre><code>@inproceedings{anonymous2026tactvla,
-  title = {TACT-VLA: Tactile-Augmented Vision-Language-Action Models for Multi-Dexterous-Hand Manipulation via Frozen Cross-Hand Contact-Kinematic Mapping},
+          <pre><code>@misc{anonymous2026tactvla,
+  title = {TACT-VLA: Tactile-Augmented
+           Vision-Language-Action Models
+           for Cross-Hand Policy Transfer},
   author = {Anonymous Authors},
-  booktitle = {Conference on Robot Learning},
-  year = {2026}
+  year = {2026},
+  note = {Manuscript}
 }</code></pre>
         </div>
       </section>
@@ -334,8 +434,8 @@
     <footer class="footer">
       <div class="section__inner footer__inner">
         <span>TACT-VLA</span>
-        <span>Anonymous project page for double-blind review.</span>
+        <span>Anonymous research project page.</span>
       </div>
     </footer>
-</body>
+  </body>
 </html>
